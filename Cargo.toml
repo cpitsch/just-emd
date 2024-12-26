@@ -1,0 +1,14 @@
+[package]
+name = "network_simplex"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ndarray = "0.16.1"
+thiserror = "1.0.64"
+
+[build-dependencies]
+bindgen = "0.70.1"
+cc = "1.1.30"
