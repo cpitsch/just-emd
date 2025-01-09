@@ -3,7 +3,18 @@ use ndarray::{Array1, Array2, Axis};
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 #[allow(non_snake_case)]
-/// Largely inspired by the wrapper from rust_optimal_transport
+/// A direct wrapper around the generated bindings, with the same inputs and outputs
+/// as the C code.
+/// Only use this directly if you absolutely need to. A simpler interface is given
+/// by [crate::emd].
+///
+/// * `a` - The relative frequencies of the items in the source population.
+/// * `b` - The relative frequencies of the items in the target population.
+/// * `M` - The cost matrix, giving a cost to matching a unit of the source item to
+/// a unit of the target item.
+/// * `max_iter` - The maximum number of iterations to perform in the network simplex algorithm.
+///
+/// Largely inspired by the wrapper in rust_optimal_transport
 pub fn c_emd_wrapper(
     a: &mut Array1<f64>,
     b: &mut Array1<f64>,

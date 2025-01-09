@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 use ndarray::{Array1, Array2, Axis};
 use thiserror::Error;
 use wrap::c_emd_wrapper;
@@ -5,21 +7,31 @@ use wrap::c_emd_wrapper;
 mod wrap;
 
 #[derive(Error, Debug, PartialEq)]
+/// An error that is encountered in the computation of the EMD.
 pub enum EmdError {
+    /// A mismatch is detected between the dimensions of the populations and the cost matrix.
+    /// Expected 0x1, found 2x3.
     #[error("Dimensions of arguments do not match: Source distribution {0} and target distribution {1} do not match cost matrix dimensions {2}x{3}")]
     WeightDimensionError(usize, usize, usize, usize),
+    /// An error is raised by the fast_transport library. See [FastTransportError].
     #[error(transparent)]
     FastTransportError(#[from] FastTransportError),
+    /// An invalid (negative or zero) number of iterations was supplied.
     #[error("Number of iterations ({0}) must be > 0")]
     InvalidIterations(i32),
 }
 
 #[derive(Error, Debug, PartialEq)]
+/// An error that is raised by the fast_transport library. Based on the error code
+/// given with the solution.
 pub enum FastTransportError {
+    /// The Optimal Transport instance is infeasible.
     #[error("Network simplex problem is infeasible")]
     Infeasible,
+    /// The Optimal Transport instance is unbounded.
     #[error("Network simplex problem is unbounded")]
     Unbounded,
+    /// The maximum number of iterations was reached without reaching the optimal solution.
     #[error("Max iterations reached")]
     MaxIterReached,
 }
@@ -37,15 +49,50 @@ impl From<i32> for FastTransportError {
 }
 
 #[derive(Debug)]
+/// The result of the EMD computation.
 pub struct EmdResult {
+    /// The optimal transport solution matrix
     pub flow_matrix: Array2<f64>,
+    /// The Earth Mover's Distance computed between the two populations
     pub emd: f64,
 }
 
+/// A struct used to solve an EMD instance
+///
+/// # Examples
+///
+/// ```
+/// use just_emd::EmdSolver;
+/// use ndarray::array;
+///
+/// let mut source = array![0.3, 0.4, 0.2];
+/// let mut target = array![0.2, 0.8, 0.0];
+///
+/// let mut costs = array![
+///     [0.0, 1.0, 2.0],
+///     [1.0, 0.0, 1.0],
+///     [2.0, 1.0, 0.0]
+/// ];
+///
+/// let res = EmdSolver::new(&mut source, &mut target, &mut costs)
+///     .iterations(10000)
+///     .solve()
+///     .unwrap();
+///
+/// assert!(0.32 - res.emd <= 1e-5);
+/// ```
+///
+/// # See Also
+/// - The EMD can also be directly computed using [emd]
 pub struct EmdSolver<'a> {
+    /// The relative frequencies of the items in the source population.
     source: &'a mut Array1<f64>,
+    /// The relative frequencies of the items in the target population.
     target: &'a mut Array1<f64>,
+    /// The costs between the items of the two populations.
     costs: &'a mut Array2<f64>,
+    /// The maximum number of iterations to perform in the network simplex algorithm. By default,
+    /// this is 100000 iterations.
     iterations: i32,
 }
 
@@ -63,16 +110,46 @@ impl<'a> EmdSolver<'a> {
         }
     }
 
+    /// Adjust the maximum number of iterations that are performed in the network simplex
+    /// algorithm. By default, 100000 iterations are performed.
     pub fn iterations(mut self, iterations: i32) -> Self {
         self.iterations = iterations;
         self
     }
 
+    /// Solve the EMD instance.
     pub fn solve(&mut self) -> Result<EmdResult, EmdError> {
         emd(self.source, self.target, self.costs, self.iterations)
     }
 }
 
+/// Compute the Earth Mover's Distance between two populations
+///
+/// * `source_weights` - The relative frequencies of the items in the source population.
+/// * `target_weights` - The relative frequencies of the items in the target population.
+/// * `costs` - The cost matrix, giving a cost to matching a unit of the source item to
+/// a unit of the target item.
+/// * `iterations` - The maximum number of iterations to perform in the network simplex algorithm.
+///
+/// # Examples
+///
+/// ```
+/// use just_emd::emd;
+/// use ndarray::array;
+///
+/// let mut source = array![0.3, 0.4, 0.2];
+/// let mut target = array![0.2, 0.8, 0.0];
+///
+/// // Absolute difference as cost function
+/// let mut costs = array![
+///     [0.0, 1.0, 2.0],
+///     [1.0, 0.0, 1.0],
+///     [2.0, 1.0, 0.0]
+/// ];
+///
+/// let res = emd(&mut source, &mut target, &mut costs, 10000).unwrap();
+/// assert!(0.32 - res.emd <= 1e-5);
+/// ```
 pub fn emd(
     source_weights: &mut Array1<f64>,
     target_weights: &mut Array1<f64>,
@@ -99,6 +176,12 @@ pub fn emd(
     }
 }
 
+/// Check that the dimensions of both populations match the dimensions of the cost matrix.
+///
+/// The length of `a` should match the number of rows in the costs matrix, and the
+/// length of `b` should match the number of rows.
+///
+/// If this does not hold, an [EmdError] is returned.
 fn check_emd_input_shapes(
     a: &Array1<f64>,
     b: &Array1<f64>,
