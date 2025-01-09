@@ -2,7 +2,7 @@ fn main() {
     cc::Build::new()
         .file("fast_transport/EMD_wrapper.cpp")
         .cpp(true)
-        .flag("-std=c++14")
+        .flag_if_supported("-std=c++14")
         .compile("fast_transport");
 
     let bindings = bindgen::Builder::default()
