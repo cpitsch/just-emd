@@ -7,6 +7,7 @@ fn main() {
         .header("wrapper.h")
         .allowlist_function("EMD_wrap")
         .clang_arg("-xc++") // https://github.com/rust-lang/rust-bindgen/issues/1855
+        .clang_arg("-std=c++14")
         .generate()
         .expect("Couldn't generate bindings!");
 
