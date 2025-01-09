@@ -36,7 +36,7 @@ fn main() {
 ## Building
 - This crate uses [cc](https://crates.io/crates/cc) for C compilation and [bindgen](https://crates.io/crates/bindgen)
 for FFI. For this, you might need to install LLVM and set some environment variables. See
-[here](https://rust-lang.github.io/rust-bindgen/requirements.html).
+[bindgen user guide](https://rust-lang.github.io/rust-bindgen/requirements.html) for more information.
 
 ## See Also
 
