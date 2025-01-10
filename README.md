@@ -1,4 +1,4 @@
-Just a wrapper around the C code used by Python Optimal Transport. No more, no less.
+Just a wrapper around the C++ code used by Python Optimal Transport for the EMD. No more, no less.
 
 ## Examples
 ```rust
@@ -35,12 +35,13 @@ fn main() {
 
 ## Building
 - This crate uses [cc](https://crates.io/crates/cc) for C compilation and [bindgen](https://crates.io/crates/bindgen)
-for FFI. For this, you might need to install LLVM and set some environment variables. See
-[bindgen user guide](https://rust-lang.github.io/rust-bindgen/requirements.html) for more information.
+for FFI. For this, you might need to install LLVM and set some environment variables.
+For more information, see the [bindgen user guide](https://rust-lang.github.io/rust-bindgen/requirements.html).
 
 ## See Also
 
-- [Rust-optimal-transport](https://crates.io/crates/rust-optimal-transport) also wraps the
-same C++ library, however it has further dependencies that require OpenBLAS, which, to my
-knowledge, cannot be disabled without making the library unusable (for some reason, the
-library doesn't compile when all feature flags are disabled).
+- [Rust-optimal-transport](https://crates.io/crates/rust-optimal-transport)
+    - Wraps the same C++ library for the EMD
+    - Also contains many more optimal transport variants which are supported by Python Optimal Transport
+    - However, some of these variants require OpenBLAS, which is complicated to set up, and
+    when disabling these features flags, the library does not compile
