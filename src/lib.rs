@@ -48,7 +48,7 @@ impl From<i32> for FastTransportError {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 /// The result of the EMD computation.
 pub struct EmdResult {
     /// The optimal transport solution matrix
@@ -57,7 +57,7 @@ pub struct EmdResult {
     pub emd: f64,
 }
 
-/// A struct used to solve an EMD instance
+/// A struct used to solve a particular EMD instance.
 ///
 /// # Examples
 ///
@@ -83,7 +83,7 @@ pub struct EmdResult {
 /// ```
 ///
 /// # See Also
-/// - The EMD can also be directly computed using [emd]
+/// - The EMD can also be computed directly using [emd]
 pub struct EmdSolver<'a> {
     /// The relative frequencies of the items in the source population.
     source: &'a mut Array1<f64>,
@@ -97,6 +97,12 @@ pub struct EmdSolver<'a> {
 }
 
 impl<'a> EmdSolver<'a> {
+    /// Create a new `EmdSolver`
+    ///
+    /// * `source` - The relative frequencies of the items in the source population.
+    /// * `target` - The relative frequencies of the items in the target population.
+    /// * `costs` - The cost matrix, giving a cost to matching a unit of the source item to
+    /// a unit of the target item. Must have shape |`source`|x|`target`|.
     pub fn new(
         source: &'a mut Array1<f64>,
         target: &'a mut Array1<f64>,
@@ -128,7 +134,7 @@ impl<'a> EmdSolver<'a> {
 /// * `source_weights` - The relative frequencies of the items in the source population.
 /// * `target_weights` - The relative frequencies of the items in the target population.
 /// * `costs` - The cost matrix, giving a cost to matching a unit of the source item to
-/// a unit of the target item.
+/// a unit of the target item. Must have shape |`source_weights`|x|`target_weights`|.
 /// * `iterations` - The maximum number of iterations to perform in the network simplex algorithm.
 ///
 /// # Examples
