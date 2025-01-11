@@ -40,7 +40,7 @@ impl From<i32> for FastTransportError {
     fn from(value: i32) -> Self {
         match value {
             0 => Self::Infeasible,
-            1 => panic!("Cannot create FastTransportErrorCode for optimal solution"),
+            1 => panic!("Cannot create FastTransportError for optimal solution"),
             2 => Self::Unbounded,
             3 => Self::MaxIterReached,
             _ => panic!("Invalid result code from FastTransport"),
