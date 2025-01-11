@@ -49,4 +49,4 @@ For more information, see the [bindgen user guide](https://rust-lang.github.io/r
     - Wraps the same C++ library used for the EMD
     - Also contains many more optimal transport variants which are supported by Python Optimal Transport
     - However, some of these variants require OpenBLAS, which is complicated to set up, and
-    when disabling these features flags, the library does not compile
+    when disabling these features flags, the library does not compile (on windows).
