@@ -16,6 +16,7 @@ fn main() {
         [2.0, 1.0, 0.0]
     ];
 
+    // Create a solver instance to compute the EMD
     let res = EmdSolver::new(&mut source, &mut target, &mut costs)
         .iterations(10000)
         .solve()
@@ -41,7 +42,7 @@ For more information, see the [bindgen user guide](https://rust-lang.github.io/r
 ## See Also
 
 - [Rust-optimal-transport](https://crates.io/crates/rust-optimal-transport)
-    - Wraps the same C++ library for the EMD
+    - Wraps the same C++ library used for the EMD
     - Also contains many more optimal transport variants which are supported by Python Optimal Transport
     - However, some of these variants require OpenBLAS, which is complicated to set up, and
     when disabling these features flags, the library does not compile

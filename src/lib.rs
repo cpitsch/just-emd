@@ -10,10 +10,10 @@ mod wrap;
 /// An error that is encountered in the computation of the EMD.
 pub enum EmdError {
     /// A mismatch is detected between the dimensions of the populations and the cost matrix.
-    /// Expected 0x1, found 2x3.
+    /// Expected `self.0`x`self.1`, found `self.2`x`self.3`.
     #[error("Dimensions of arguments do not match: Source distribution {0} and target distribution {1} do not match cost matrix dimensions {2}x{3}")]
     WeightDimensionError(usize, usize, usize, usize),
-    /// An error is raised by the fast_transport library. See [FastTransportError].
+    /// An error is raised by the `fast_transport` library. See [FastTransportError].
     #[error(transparent)]
     FastTransportError(#[from] FastTransportError),
     /// An invalid (negative or zero) number of iterations was supplied.
@@ -22,8 +22,8 @@ pub enum EmdError {
 }
 
 #[derive(Error, Debug, PartialEq)]
-/// An error that is raised by the fast_transport library. Based on the error code
-/// given with the solution.
+/// An error that is raised by the `fast_transport` library. Based on the error code
+/// returned from the C++ function.
 pub enum FastTransportError {
     /// The Optimal Transport instance is infeasible.
     #[error("Network simplex problem is infeasible")]
@@ -83,7 +83,7 @@ pub struct EmdResult {
 /// ```
 ///
 /// # See Also
-/// - The EMD can also be computed directly using [emd]
+/// - The EMD can also be computed directly using the [emd] function
 pub struct EmdSolver<'a> {
     /// The relative frequencies of the items in the source population.
     source: &'a mut Array1<f64>,
