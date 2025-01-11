@@ -1,7 +1,8 @@
 Just a wrapper around the C++ code used by Python Optimal Transport for the EMD. No more, no less.
 
-Uses the same C++ code as [Rust-optimal-transport](https://crates.io/crates/rust-optimal-transport),
-but uses different crates for creating the FFI. For more info, see [_See Also_](#see-also).
+- Uses the same C++ code as [rust-optimal-transport](https://crates.io/crates/rust-optimal-transport),
+but uses different crates for creating the FFI. For more info, see _[See Also](#see-also)_.
+    - C++ code is taken from the rust-optimal-transport [repository](https://github.com/kachark/rust-optimal-transport/tree/main/src/exact/fast_transport).
 
 ## Examples
 ```rust
